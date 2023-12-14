@@ -65,7 +65,7 @@ while playing: #explain here
         if spots[row][column] not in ["X","O"]:
             turn += 1
             spots[row][column] = check_turn(turn)
-    if choice not in ['1','2','3','4','5','6','7','8','9']:
+    #TODO: Finish this, if choice not in ['1','2','3','4','5','6','7','8','9']:
 
 
 
