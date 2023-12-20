@@ -6,7 +6,6 @@ def draw_board(spots):
              f"|{spots[2][0]}|{spots[2][1]}|{spots[2][2]}|")
     print(board)
 
-
 def check_turn(turn):
     if turn % 2 == 0:
         return "O"
@@ -22,7 +21,6 @@ def save_data(data):
     with open('data.json', 'w') as file:
         json.dump(data, file, indent=4)
 
-
 def check_win(spots):
     if (spots[0][0] == spots[0][1] == spots[0][2]
             or spots[1][0] == spots[1][1] == spots[1][2]
@@ -34,15 +32,5 @@ def check_win(spots):
             or spots[0][0] == spots[1][1] == spots[2][2]):
         return True
 
-    # if (spots[0][0] in ["X", "O"]
-    #         and spots[0][1] in ["X", "O"]
-    #         and spots[0][2] in ["X", "O"]
-    #         and spots[1][0] in ["X", "O"]
-    #         and spots[1][1] in ["X", "O"]
-    #         and spots[1][2] in ["X", "O"]
-    #         and spots[2][0] in ["X", "O"]
-    #         and spots[2][1] in ["X", "O"]
-    #         and spots[2][2] in ["X", "O"]):
-    #     return True
     else:
         return False
