@@ -1,7 +1,7 @@
 # Tic Tac Toe Program
 print("Welcome to Tic Tac Toe")
 
-from Helpers import draw_board, check_turn, check_win, load_board_states, save_data
+from helpers import draw_board, check_turn, check_win, load_board_states, save_data
 import json
 import random
 
@@ -18,10 +18,11 @@ def play_game():
     turn = 0
     last_turn = -1
     move_number = 0
-    local_log_dict = {}
+    local_log_dict = {} #local log to keep track of board states
     winner = 'undefined'
+    board_states = load_board_states()
 
-    while playing: #explain here
+    while playing: #Game loop
         move_number += 1
         draw_board(spots)
 
@@ -30,8 +31,7 @@ def play_game():
             print("That spot is taken, pick an open spot")
         last_turn = turn
 
-        x = load_board_states()
-        random_play = random.choice(x[str(spots)]["options"])
+        random_play = random.choice(board_states[str(spots)]["options"])
         local_log_dict[str(spots)] = random_play
 
         choice = str(random_play)
@@ -59,7 +59,6 @@ def play_game():
             print("Player 1 Wins!")
             winner = 'X'
 
-
         else:
             print("Player 2 Wins!")
             winner = 'O'
@@ -68,59 +67,61 @@ def play_game():
         print("The game is tied. No winner.")
         print("Thanks for playing!")
 
-    print(local_log_dict) # TODO: DELETE once you confirm this is right, doesn't need to be on the output
+    print(local_log_dict) #Printing for records and validation purposes
 
     #Updating the JSON file depending on if X or O wins
 
     if winner == 'X':
-        x_gameStates = {}
+        x_gameStates = {} #Local log to just store the board states for where X moves, relevant when X wins
         index = 0
         for state, move in local_log_dict.items():
             if index % 2 == 0:
                 x_gameStates[state] = move
             index += 1
-        # Updating the winning moves in the JSON file if X wins
-        x = load_board_states()
-        x["AI Training Summary"]["Total X-Won games"] += 1
-        for state,move in x_gameStates.items():
-            x[state]["options"].append(move)
-        save_data(x)
 
-        print(x_gameStates) # TODO: DELETE once you confirm this is right, doesn't need to be on the output
+        # Updating the winning moves in the JSON file if X wins
+        board_states["AI Training Summary"]["Total X-Won games"] += 1
+        for state,move in x_gameStates.items():
+            board_states[state]["options"].append(move)
+        save_data(board_states)
+
+        print(x_gameStates) #Printing for records and validation purposes
 
     elif winner == 'O':
-        o_gameStates = {}
+        o_gameStates = {} #Local log to just store the board states for where O moves, relevant when O wins
         index = 0
         for state, move in local_log_dict.items():
             if index % 2 == 1:
                 o_gameStates[state] = move
             index += 1
+
         # Updating the winning moves in the JSON file if O wins
-        x = load_board_states()
-        x["AI Training Summary"]["Total O-Won games"] += 1
+        board_states["AI Training Summary"]["Total O-Won games"] += 1
         for state, move in o_gameStates.items():
-            x[state]["options"].append(move)
-        save_data(x)
-        print(o_gameStates) # TODO: DELETE once you confirm this is right, doesn't need to be on the output
+            board_states[state]["options"].append(move)
+        save_data(board_states)
+        print(o_gameStates)
 
     else:
+        #Will train the AI based on draws as well since the ideal AI would either win or draw a game. Tic Tac Toe is almost impossible to win every time since there are so few options to make
         winner = 'none'
-        x = load_board_states()
-        x["AI Training Summary"]["Total draws"] += 1
-        save_data(x)
+        board_states["AI Training Summary"]["Total draws"] += 1
+        for state, move in local_log_dict.items(): #will add all the board states and moves for when the game results in a draw
+            board_states[state]["options"].append(move)
+        save_data(board_states)
+        print(local_log_dict)
 
-    x = load_board_states()
-    x["AI Training Summary"]["Total games"] += 1
-    save_data(x)
+    board_states = load_board_states()
+    board_states["AI Training Summary"]["Total games"] += 1
+    save_data(board_states)
 
     return winner
 
-
-games_to_play = 1000
+#Loop to train the AI against its self below
+games_to_play = 200
 
 for g in range(games_to_play):
     result = play_game()
-
 
 
 
