@@ -101,9 +101,3 @@ else:
         print("\nThe game is tied. No winner.")
         print("Thanks for playing!")
 
-
-
-
-else:
-    winner = 'none'
-
